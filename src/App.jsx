@@ -1,21 +1,18 @@
 import { useState } from "react";
 import "./styles.css";
+import { TodoList } from "./TodoList";
+import { TodoForm } from "./TodoForm";
 
 export default function App() {
-  const [newItem, setNewItem] = useState("");
   const [todos, setTodos] = useState([]);
 
-  function handleSumbit(e) {
-    e.preventDefault();
-
+  function addTodo(title) {
     setTodos((currentTodos) => {
       return [
         ...currentTodos,
-        { id: crypto.randomUUID(), title: newItem, completed: false },
+        { id: crypto.randomUUID(), title, completed: false },
       ];
     });
-
-    setNewItem("");
   }
 
   function toggleTodo(id, completed) {
@@ -37,42 +34,13 @@ export default function App() {
 
   return (
     <>
-      <form onSubmit={handleSumbit} className="new-item-form">
-        <div className="form-row">
-          <label htmlFor="item">New Item</label>
-          <input
-            value={newItem}
-            onChange={(e) => setNewItem(e.target.value)}
-            type="text"
-            id="item"
-          ></input>
-        </div>
-        <button className="button">Add</button>
-      </form>
+      <TodoForm onSubmit={addTodo}></TodoForm>
       <h2>Todo List</h2>
-      <ul className="list">
-        {todos.length === 0 && "No Todos"}
-        {todos.map((todo) => {
-          return (
-            <li key={todo.id}>
-              <label>
-                <input
-                  type="checkbox"
-                  checked={todo.completed}
-                  onChange={(e) => toggleTodo(todo.id, e.target.checked)}
-                ></input>
-                {todo.title}
-              </label>
-              <button
-                onClick={() => deleteTodo(todo.id)}
-                className="button button-danger"
-              >
-                Delete
-              </button>
-            </li>
-          );
-        })}
-      </ul>
+      <TodoList
+        todos={todos}
+        toggleTodo={toggleTodo}
+        deleteTodo={deleteTodo}
+      ></TodoList>
     </>
   );
 }
